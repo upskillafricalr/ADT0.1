@@ -30,8 +30,12 @@ button:disabled{opacity:.6;cursor:wait}
 .hide{display:none}
 .center{text-align:center}
 .reg{display:inline-block;background:var(--red);color:#fff;font-weight:800;padding:6px 16px;border-radius:99px;letter-spacing:.04em}
-canvas{width:100%;max-width:420px;border-radius:12px;border:1px solid var(--line);margin:14px auto;display:block}
-.row{display:flex;gap:10px}.row button{margin-top:0}
+canvas{width:100%;max-width:340px;border-radius:12px;border:1px solid var(--line);margin:14px auto;display:block}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+button.sm{width:auto;min-width:130px;padding:10px 22px;font-size:.9rem;margin:0}
+input[type=file]{max-width:340px;margin:0 auto;display:block;padding:8px;font-size:.9rem}
+.step2 p{margin:8px 0}
+.strip a{color:#fff;text-decoration:underline}
 small{opacity:.75}
 </style>
 </head>
@@ -39,7 +43,7 @@ small{opacity:.75}
 <header>
   <img src="header.png" alt="Upskill Africa Foundation and UEEC: Join our Advocates Development Training 0.1">
 </header>
-<div class="strip">Free training · February 1–19 · Online via Google Meet · Certificate upon graduation</div>
+<div class="strip">Free training · February 1–19 · Online via Google Meet · Certificate · T-shirt · <a href="ADT0.1_info/">Full training details</a></div>
 
 <main>
 <!-- STEP 1: FORM -->
@@ -70,26 +74,28 @@ small{opacity:.75}
 </section>
 
 <!-- STEP 2: CONGRATS + FLYER -->
-<section id="s2" class="card center hide">
+<section id="s2" class="card center step2 hide">
   <h2 style="margin-top:0">Congratulations, <span id="cName"></span>!</h2>
   <p>You are registered for Advocates Development Training 0.1.</p>
   <span class="reg" id="cReg"></span>
   <p id="mailNote"><small></small></p>
-  <p>Upload your photo to create your participant flyer.</p>
+  <p><small><a href="ADT0.1_info/" style="color:var(--blue)">View full training details</a></small></p>
+  <p style="margin-top:16px"><b>Upload your photo to create your participant flyer</b></p>
   <input id="photo" type="file" accept="image/*" aria-label="Upload your photo">
   <div class="err" id="err2" role="alert"></div>
-  <button id="genBtn" type="button">Generate my flyer</button>
+  <div class="row"><button id="genBtn" type="button" class="sm">Generate flyer</button></div>
   <canvas id="cv" width="1080" height="1350" class="hide" aria-label="Your participant flyer"></canvas>
   <div class="row hide" id="actions">
-    <button id="dl" type="button">Download flyer</button>
-    <button id="share" type="button" class="alt">Share</button>
+    <button id="dl" type="button" class="sm">Download</button>
+    <button id="share" type="button" class="sm alt">Share</button>
   </div>
+  <p id="saveNote" style="margin-top:10px"><small></small></p>
 </section>
 </main>
 
 <script>
 /* ====== CONFIG: paste your Apps Script Web App URL here ====== */
-const API_URL = "https://script.google.com/macros/s/AKfycbwZKHSPF33v6gJQSq8clCaXPPgD2R_1LYVn_GlgsikaUruaG4sefTMeUSe3FQdgvtEL/exec";
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 const TITLE = "Advocates Development Training 0.1";
 /* ============================================================== */
 
@@ -150,52 +156,61 @@ $("genBtn").addEventListener("click", async () => {
     draw(photo, logo, flag);
     $("cv").classList.remove("hide"); $("actions").classList.remove("hide");
     $("cv").scrollIntoView({ behavior: "smooth", block: "center" });
+    saveFlyer();
   } catch (e) { $("err2").textContent = "Could not read that image. Try another photo."; }
   $("genBtn").disabled = false; $("genBtn").textContent = "Generate again";
 });
 
 function draw(photo, logo, flag) {
-  const cv = $("cv"), c = cv.getContext("2d"), W = 1080, H = 1350, BLUE = "#0b3fbf", RED = "#e11d1d";
-  c.clearRect(0, 0, W, H);
-  c.fillStyle = "#fff"; c.fillRect(0, 0, W, H);
-  // top band
+  const cv = $("cv"), c = cv.getContext("2d"), W = 1080, BLUE = "#0b3fbf", RED = "#e11d1d";
+  c.fillStyle = "#fff"; c.fillRect(0, 0, W, 1350);
   c.fillStyle = BLUE; c.fillRect(0, 0, W, 250);
   if (logo) { c.save(); c.beginPath(); c.arc(150, 125, 85, 0, 7); c.fillStyle = "#fff"; c.fill(); c.clip(); c.drawImage(logo, 65, 40, 170, 170); c.restore(); }
   c.fillStyle = "#fff"; c.textAlign = "left";
   c.font = "600 30px Sora, Arial"; c.fillText("Upskill Africa Foundation", 265, 105);
   c.font = "400 24px Sora, Arial"; c.fillText("Inclusive Education for All", 265, 145);
   c.fillStyle = RED; c.fillRect(0, 250, W, 10);
-  // title
   c.textAlign = "center"; c.fillStyle = "#0d1b3d";
-  c.font = "400 38px Sora, Arial"; c.fillText("Join our", W/2, 325);
-  c.fillStyle = BLUE; fit(c, "Advocates Development", 940, 70, 800); c.fillText("Advocates Development", W/2, 400);
-  c.fillStyle = RED; c.font = "800 70px Sora, Arial"; c.fillText("Training 0.1", W/2, 480);
-  // photo
-  const cx = W/2, cy = 700, R = 170;
+  c.font = "400 38px Sora, Arial"; c.fillText("Join our", W/2, 322);
+  c.fillStyle = BLUE; fit(c, "Advocates Development", 940, 70, 800); c.fillText("Advocates Development", W/2, 395);
+  c.fillStyle = RED; c.font = "800 70px Sora, Arial"; c.fillText("Training 0.1", W/2, 468);
+  c.fillStyle = "#0d1b3d"; c.font = "600 26px Sora, Arial"; c.fillText("February 1 – 19  ·  Online via Google Meet", W/2, 515);
+  const cx = W/2, cy = 735, R = 160;
   c.beginPath(); c.arc(cx, cy, R + 14, 0, 7); c.fillStyle = RED; c.fill();
   c.beginPath(); c.arc(cx, cy, R + 4, 0, 7); c.fillStyle = "#fff"; c.fill();
   c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 7); c.clip();
   const s = Math.max(2*R / photo.width, 2*R / photo.height), w = photo.width * s, h = photo.height * s;
   c.drawImage(photo, cx - w/2, cy - h/2, w, h); c.restore();
-  // statement
-  c.fillStyle = RED; c.font = "800 40px Sora, Arial"; c.fillText("I AM A REGISTERED PARTICIPANT", W/2, 960);
-  c.fillStyle = BLUE; fit(c, reg.name, 940, 66, 800); c.fillText(reg.name, W/2, 1035);
-  c.fillStyle = "#0d1b3d"; fit(c, reg.occupation, 900, 38, 600); c.fillText(reg.occupation, W/2, 1090);
-  // country + flag
+  c.fillStyle = RED; c.font = "800 38px Sora, Arial"; c.fillText("I AM A REGISTERED PARTICIPANT", W/2, 968);
+  c.fillStyle = BLUE; fit(c, reg.name, 940, 64, 800); c.fillText(reg.name, W/2, 1038);
+  c.fillStyle = "#0d1b3d"; fit(c, reg.occupation, 900, 36, 600); c.fillText(reg.occupation, W/2, 1088);
   const label = reg.country === "Other" ? "" : reg.country;
   if (label) {
-    c.font = "600 36px Sora, Arial"; const tw = c.measureText(label).width, fw = flag ? 64 : 0, gap = flag ? 16 : 0;
+    c.font = "600 34px Sora, Arial"; const tw = c.measureText(label).width, fw = flag ? 60 : 0, gap = flag ? 16 : 0;
     const x0 = W/2 - (tw + fw + gap)/2;
-    if (flag) { const fh = 64 * flag.height / flag.width; c.drawImage(flag, x0, 1148 - fh/2 - 12, fw, fh); }
-    c.textAlign = "left"; c.fillText(label, x0 + fw + gap, 1148); c.textAlign = "center";
+    if (flag) { const fh = fw * flag.height / flag.width; c.drawImage(flag, x0, 1138 - fh/2 - 11, fw, fh); }
+    c.textAlign = "left"; c.fillText(label, x0 + fw + gap, 1138); c.textAlign = "center";
   }
-  // ID badge
-  c.fillStyle = BLUE; c.beginPath(); c.roundRect(W/2 - 230, 1175, 460, 64, 32); c.fill();
-  c.fillStyle = "#fff"; c.font = "800 34px Sora, Arial"; c.fillText("ID: " + reg.regNo, W/2, 1219);
-  // footer
-  c.fillStyle = BLUE; c.fillRect(0, 1270, W, 80);
-  c.fillStyle = "#fff"; c.font = "600 28px Sora, Arial";
-  c.fillText("Feb 1–19  ·  Online via Google Meet  ·  upskillafrica.org", W/2, 1320);
+  c.fillStyle = BLUE; c.beginPath(); c.roundRect(W/2 - 220, 1160, 440, 56, 28); c.fill();
+  c.fillStyle = "#fff"; c.font = "800 31px Sora, Arial"; c.fillText("ID: " + reg.regNo, W/2, 1199);
+  // UAF contact footer
+  c.fillStyle = BLUE; c.fillRect(0, 1245, W, 105);
+  c.fillStyle = RED; c.fillRect(0, 1245, W, 6);
+  c.fillStyle = "#fff"; c.font = "600 26px Sora, Arial";
+  c.fillText("upskillafrica.org  ·  contact@upskillafrica.org", W/2, 1293);
+  c.font = "400 25px Sora, Arial";
+  c.fillText("+231 770 044 011  ·  WhatsApp: +231 889 541 712", W/2, 1329);
+}
+
+async function saveFlyer() {
+  const note = $("saveNote").firstChild; note.textContent = "Saving your flyer to the database…";
+  try {
+    const image = $("cv").toDataURL("image/jpeg", 0.88);
+    const r = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "saveFlyer", regNo: reg.regNo, email: reg.email, image }) });
+    const j = await r.json();
+    note.textContent = j.ok ? "Your flyer was saved to your registration." : "Flyer is ready. It could not be saved to the database.";
+  } catch (e) { note.textContent = "Flyer is ready. It could not be saved to the database."; }
 }
 
 function blobOf() { return new Promise(r => $("cv").toBlob(r, "image/png")); }
