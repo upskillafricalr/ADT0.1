@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advocates Development Training 0.1 – Apply | Upskill Africa Foundation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0b3fbf;--ink:#0d1b3d;--red:#e11d1d;--bg:#f4f7ff;--line:#cfd9f5;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--ink:#e8eeff;--bg:#0a1230;--line:#2a3a78;--card:#111c44}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Sora,system-ui,sans-serif;background:linear-gradient(rgba(8,40,140,.82),rgba(8,40,140,.82)),url(bg.jpg) center/cover fixed #0b3fbf;color:var(--ink);line-height:1.5;min-height:100vh}
+header{background:#fff;border-bottom:6px solid var(--red)}
+header img{display:block;width:100%;max-width:760px;height:auto;margin:0 auto}
+.strip{background:var(--blue);color:#fff;text-align:center;font-weight:600;font-size:.9rem;padding:10px 14px}
+main{max-width:680px;margin:20px auto 40px;padding:0 14px}
+.card{background:var(--card);box-shadow:0 10px 30px rgba(0,0,0,.25);border-radius:16px;padding:22px;border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+label{display:block;font-weight:600;font-size:.85rem;margin-bottom:4px}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font:inherit;background:transparent;color:inherit}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid var(--blue);outline-offset:1px}
+select option{color:#000}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:14px 20px;cursor:pointer;background:var(--blue);color:#fff;width:100%;margin-top:6px}
+button.alt{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+button:disabled{opacity:.6;cursor:wait}
+.err{color:var(--red);font-weight:600;margin-top:10px;min-height:1.2em}
+.hide{display:none}
+.center{text-align:center}
+.reg{display:inline-block;background:var(--red);color:#fff;font-weight:800;padding:6px 16px;border-radius:99px;letter-spacing:.04em}
+canvas{width:100%;max-width:420px;border-radius:12px;border:1px solid var(--line);margin:14px auto;display:block}
+.row{display:flex;gap:10px}.row button{margin-top:0}
+small{opacity:.75}
+</style>
+</head>
+<body>
+<header>
+  <img src="header.png" alt="Upskill Africa Foundation and UEEC: Join our Advocates Development Training 0.1">
+</header>
+<div class="strip">Free training · February 1–19 · Online via Google Meet · Certificate upon graduation</div>
+
+<main>
+<!-- STEP 1: FORM -->
+<section id="s1" class="card">
+  <form id="form" novalidate>
+    <div class="grid">
+      <div class="full"><label for="fullName">Full name</label><input id="fullName" required autocomplete="name"></div>
+      <div><label for="email">Email</label><input id="email" type="email" required autocomplete="email"></div>
+      <div><label for="phone">Phone number</label><input id="phone" type="tel" required autocomplete="tel"></div>
+      <div><label for="whatsapp">WhatsApp number <small>(if different)</small></label><input id="whatsapp" type="tel"></div>
+      <div><label for="gender">Gender</label>
+        <select id="gender" required><option value="">Select</option><option>Female</option><option>Male</option><option>Prefer not to say</option></select></div>
+      <div><label for="country">Country</label><select id="country" required><option value="">Select country</option></select></div>
+      <div><label for="city">City / county</label><input id="city"></div>
+      <div><label for="occupation">Occupation</label><input id="occupation" required placeholder="e.g. Student, Teacher, Journalist"></div>
+      <div><label for="organization">Organization / school <small>(optional)</small></label><input id="organization"></div>
+      <div class="full"><label for="category">I am a</label>
+        <select id="category" required><option value="">Select</option>
+          <option>Emerging education advocate</option><option>Human rights advocate</option><option>Youth</option>
+          <option>Journalist</option><option>Community leader</option><option>Student leader</option></select></div>
+      <div class="full"><label for="motivation">Why do you want to join? <small>(optional)</small></label><textarea id="motivation" rows="3"></textarea></div>
+      <div class="full"><label for="heard">How did you hear about us?</label>
+        <select id="heard"><option value="">Select</option><option>Facebook</option><option>WhatsApp</option><option>Instagram</option><option>Friend or family</option><option>School / organization</option><option>Other</option></select></div>
+    </div>
+    <div class="err" id="err" role="alert"></div>
+    <button id="submitBtn" type="submit">Submit application</button>
+  </form>
+</section>
+
+<!-- STEP 2: CONGRATS + FLYER -->
+<section id="s2" class="card center hide">
+  <h2 style="margin-top:0">Congratulations, <span id="cName"></span>!</h2>
+  <p>You are registered for Advocates Development Training 0.1.</p>
+  <span class="reg" id="cReg"></span>
+  <p>Upload your photo to create your participant flyer.</p>
+  <input id="photo" type="file" accept="image/*" aria-label="Upload your photo">
+  <div class="err" id="err2" role="alert"></div>
+  <button id="genBtn" type="button">Generate my flyer</button>
+  <canvas id="cv" width="1080" height="1350" class="hide" aria-label="Your participant flyer"></canvas>
+  <div class="row hide" id="actions">
+    <button id="dl" type="button">Download flyer</button>
+    <button id="share" type="button" class="alt">Share</button>
+  </div>
+</section>
+</main>
+
+<script>
+/* ====== CONFIG: paste your Apps Script Web App URL here ====== */
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+const TITLE = "Advocates Development Training 0.1";
+/* ============================================================== */
+
+const COUNTRIES = "Liberia:LR,Sierra Leone:SL,Ghana:GH,Nigeria:NG,Guinea:GN,Côte d'Ivoire:CI,Gambia:GM,Senegal:SN,Mali:ML,Burkina Faso:BF,Togo:TG,Benin:BJ,Niger:NE,Cameroon:CM,Kenya:KE,Uganda:UG,Tanzania:TZ,Rwanda:RW,Ethiopia:ET,South Africa:ZA,Zambia:ZM,Zimbabwe:ZW,Malawi:MW,Mozambique:MZ,Botswana:BW,Namibia:NA,Angola:AO,DR Congo:CD,Congo:CG,Gabon:GA,Egypt:EG,Morocco:MA,Algeria:DZ,Tunisia:TN,Sudan:SD,South Sudan:SS,Somalia:SO,Burundi:BI,Chad:TD,Mauritania:MR,Cabo Verde:CV,Guinea-Bissau:GW,Eswatini:SZ,Lesotho:LS,Madagascar:MG,Mauritius:MU,Eritrea:ER,Djibouti:DJ,Central African Republic:CF,Equatorial Guinea:GQ,Libya:LY,United States:US,United Kingdom:GB,Canada:CA,India:IN,Other:".split(",").map(s=>{const i=s.lastIndexOf(":");return{n:s.slice(0,i),c:s.slice(i+1)}});
+const $ = id => document.getElementById(id);
+COUNTRIES.forEach(o=>{const e=document.createElement("option");e.textContent=o.n;$("country").appendChild(e)});
+
+let reg = null;
+
+$("form").addEventListener("submit", async ev => {
+  ev.preventDefault(); $("err").textContent = "";
+  const ids = ["fullName","email","phone","whatsapp","gender","country","city","occupation","organization","category","motivation","heard"];
+  const data = {}; ids.forEach(i => data[i] = $(i).value.trim());
+  for (const k of ["fullName","email","phone","gender","country","occupation","category"])
+    if (!data[k]) return $("err").textContent = "Please complete all required fields.";
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) return $("err").textContent = "Enter a valid email address.";
+  if (API_URL.startsWith("PASTE")) return $("err").textContent = "Setup needed: add the Apps Script URL in index.html.";
+
+  const btn = $("submitBtn"); btn.disabled = true; btn.textContent = "Submitting…";
+  try {
+    // text/plain avoids a CORS preflight, which Apps Script does not support
+    const r = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+    const res = await r.json();
+    if (!res.ok) throw new Error(res.error || "Submission failed");
+    reg = { regNo: res.regNo, name: res.fullName || data.fullName, country: res.country || data.country, occupation: res.occupation || data.occupation };
+    $("cName").textContent = reg.name.split(" ")[0];
+    $("cReg").textContent = reg.regNo;
+    $("s1").classList.add("hide"); $("s2").classList.remove("hide");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (e) {
+    $("err").textContent = "Could not submit. Check your connection and try again. (" + e.message + ")";
+    btn.disabled = false; btn.textContent = "Submit application";
+  }
+});
+
+function loadImg(src, cors) {
+  return new Promise((res, rej) => { const i = new Image(); if (cors) i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = src; });
+}
+function fit(ctx, text, maxW, size, weight) {
+  do { ctx.font = `${weight} ${size}px Sora, Arial, sans-serif`; size -= 2; } while (ctx.measureText(text).width > maxW && size > 20);
+}
+
+$("genBtn").addEventListener("click", async () => {
+  $("err2").textContent = "";
+  const file = $("photo").files[0];
+  if (!file) return $("err2").textContent = "Upload your photo first.";
+  if (!file.type.startsWith("image/")) return $("err2").textContent = "Please choose an image file.";
+  $("genBtn").disabled = true; $("genBtn").textContent = "Generating…";
+  try {
+    await document.fonts.load("800 40px Sora");
+    const photo = await loadImg(URL.createObjectURL(file));
+    const logo = await loadImg("logo.png").catch(() => null);
+    const cc = (COUNTRIES.find(c => c.n === reg.country) || {}).c;
+    const flag = cc ? await loadImg(`https://flagcdn.com/w320/${cc.toLowerCase()}.png`, true).catch(() => null) : null;
+    draw(photo, logo, flag);
+    $("cv").classList.remove("hide"); $("actions").classList.remove("hide");
+    $("cv").scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (e) { $("err2").textContent = "Could not read that image. Try another photo."; }
+  $("genBtn").disabled = false; $("genBtn").textContent = "Generate again";
+});
+
+function draw(photo, logo, flag) {
+  const cv = $("cv"), c = cv.getContext("2d"), W = 1080, H = 1350, BLUE = "#0b3fbf", RED = "#e11d1d";
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = "#fff"; c.fillRect(0, 0, W, H);
+  // top band
+  c.fillStyle = BLUE; c.fillRect(0, 0, W, 250);
+  if (logo) { c.save(); c.beginPath(); c.arc(150, 125, 85, 0, 7); c.fillStyle = "#fff"; c.fill(); c.clip(); c.drawImage(logo, 65, 40, 170, 170); c.restore(); }
+  c.fillStyle = "#fff"; c.textAlign = "left";
+  c.font = "600 30px Sora, Arial"; c.fillText("Upskill Africa Foundation", 265, 105);
+  c.font = "400 24px Sora, Arial"; c.fillText("Inclusive Education for All", 265, 145);
+  c.fillStyle = RED; c.fillRect(0, 250, W, 10);
+  // title
+  c.textAlign = "center"; c.fillStyle = "#0d1b3d";
+  c.font = "400 38px Sora, Arial"; c.fillText("Join our", W/2, 325);
+  c.fillStyle = BLUE; fit(c, "Advocates Development", 940, 70, 800); c.fillText("Advocates Development", W/2, 400);
+  c.fillStyle = RED; c.font = "800 70px Sora, Arial"; c.fillText("Training 0.1", W/2, 480);
+  // photo
+  const cx = W/2, cy = 700, R = 170;
+  c.beginPath(); c.arc(cx, cy, R + 14, 0, 7); c.fillStyle = RED; c.fill();
+  c.beginPath(); c.arc(cx, cy, R + 4, 0, 7); c.fillStyle = "#fff"; c.fill();
+  c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 7); c.clip();
+  const s = Math.max(2*R / photo.width, 2*R / photo.height), w = photo.width * s, h = photo.height * s;
+  c.drawImage(photo, cx - w/2, cy - h/2, w, h); c.restore();
+  // statement
+  c.fillStyle = RED; c.font = "800 40px Sora, Arial"; c.fillText("I AM A REGISTERED PARTICIPANT", W/2, 960);
+  c.fillStyle = BLUE; fit(c, reg.name, 940, 66, 800); c.fillText(reg.name, W/2, 1035);
+  c.fillStyle = "#0d1b3d"; fit(c, reg.occupation, 900, 38, 600); c.fillText(reg.occupation, W/2, 1090);
+  // country + flag
+  const label = reg.country === "Other" ? "" : reg.country;
+  if (label) {
+    c.font = "600 36px Sora, Arial"; const tw = c.measureText(label).width, fw = flag ? 64 : 0, gap = flag ? 16 : 0;
+    const x0 = W/2 - (tw + fw + gap)/2;
+    if (flag) { const fh = 64 * flag.height / flag.width; c.drawImage(flag, x0, 1148 - fh/2 - 12, fw, fh); }
+    c.textAlign = "left"; c.fillText(label, x0 + fw + gap, 1148); c.textAlign = "center";
+  }
+  // ID badge
+  c.fillStyle = BLUE; c.beginPath(); c.roundRect(W/2 - 230, 1175, 460, 64, 32); c.fill();
+  c.fillStyle = "#fff"; c.font = "800 34px Sora, Arial"; c.fillText("ID: " + reg.regNo, W/2, 1219);
+  // footer
+  c.fillStyle = BLUE; c.fillRect(0, 1270, W, 80);
+  c.fillStyle = "#fff"; c.font = "600 28px Sora, Arial";
+  c.fillText("Feb 1–19  ·  Online via Google Meet  ·  upskillafrica.org", W/2, 1320);
+}
+
+function blobOf() { return new Promise(r => $("cv").toBlob(r, "image/png")); }
+const fname = () => `${reg.regNo}-participant-flyer.png`;
+$("dl").addEventListener("click", async () => {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(await blobOf()); a.download = fname(); a.click();
+});
+$("share").addEventListener("click", async () => {
+  const blob = await blobOf(), f = new File([blob], fname(), { type: "image/png" });
+  const text = `I am a registered participant of ${TITLE} by Upskill Africa Foundation! Register free: https://upskillafrica.org`;
+  if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], text }); } catch (e) {} }
+  else $("dl").click();
+});
+</script>
+</body>
+</html>
