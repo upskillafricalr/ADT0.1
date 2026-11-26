@@ -74,6 +74,7 @@ small{opacity:.75}
   <h2 style="margin-top:0">Congratulations, <span id="cName"></span>!</h2>
   <p>You are registered for Advocates Development Training 0.1.</p>
   <span class="reg" id="cReg"></span>
+  <p id="mailNote"><small></small></p>
   <p>Upload your photo to create your participant flyer.</p>
   <input id="photo" type="file" accept="image/*" aria-label="Upload your photo">
   <div class="err" id="err2" role="alert"></div>
@@ -113,9 +114,12 @@ $("form").addEventListener("submit", async ev => {
     const r = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
     const res = await r.json();
     if (!res.ok) throw new Error(res.error || "Submission failed");
-    reg = { regNo: res.regNo, name: res.fullName || data.fullName, country: res.country || data.country, occupation: res.occupation || data.occupation };
+    reg = { emailed: !!res.emailSent, dup: !!res.duplicate, email: data.email, regNo: res.regNo, name: res.fullName || data.fullName, country: res.country || data.country, occupation: res.occupation || data.occupation };
     $("cName").textContent = reg.name.split(" ")[0];
     $("cReg").textContent = reg.regNo;
+    $("mailNote").textContent = reg.dup ? "This email was already registered. Here is your original ID."
+      : reg.emailed ? "A confirmation email with the training details was sent to " + reg.email + ". Check your spam folder if you don't see it."
+      : "You are registered. We could not send the email right now, but we will contact you.";
     $("s1").classList.add("hide"); $("s2").classList.remove("hide");
     window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (e) {
